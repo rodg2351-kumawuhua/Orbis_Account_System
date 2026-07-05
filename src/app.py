@@ -234,9 +234,19 @@ class DatabaseStore:
                 connection.executescript(schema)
 
     def bootstrap_admin(self, username: str, password: str) -> None:
-        if self.get_user(username):
-            return
         now = datetime.now(UTC).isoformat()
+        existing_user = self.get_user(username)
+        if existing_user:
+            with self._connect() as connection:
+                connection.execute(
+                    self._sql("""
+                    UPDATE users
+                    SET password_hash = ?, role = 'admin', is_active = 1, updated_at = ?
+                    WHERE username = ?
+                    """),
+                    (self.auth.hash_password(password), now, username),
+                )
+            return
         with self._connect() as connection:
             connection.execute(
                 self._sql("""
