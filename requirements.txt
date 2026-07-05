@@ -1,0 +1,7 @@
+openai>=1.30.0
+telethon>=1.36.0
+gspread>=6.1.2
+google-auth>=2.29.0
+python-dotenv>=1.0.1
+psycopg[binary]>=3.2.1
+cloudinary>=1.41.0
